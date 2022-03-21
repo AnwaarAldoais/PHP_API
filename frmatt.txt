@@ -4,12 +4,12 @@
       {
         "table":"product",
         "status":"deleClient",
-        "values": [10,12,16]    
+        "values": [13,21,22]    
       },
       {
         "table":"category",
         "status":"deleClient",
-        "values":[5]   
+        "values":[10]   
       }
     ]
 }
@@ -18,15 +18,15 @@
     "data":[
       {
         "table":"product",
-        "status":"deleClient",
+        "status":"newClient",
         "values":
     ["(0, 'mango', NULL, '989999', 1, 2, 1, NULL, NULL, 0, NULL, NULL, NULL, '', 2, 0, 1, '', NULL, 'yes', 0, '2021-10-26 12:05:38', '0000-00-00 00:00:00', '0000-00-00      00:00:00', NULL,NULL)",
-    "(0, 'apple', NULL, '989999', 1, 2, 1, NULL, NULL, 0, NULL, NULL, NULL, '', 2, 0, 1, '', NULL, 'yes', 0, '2021-10-26 12:05:38', '0000-00-00 00:00:00', '0000-00-00 00:00:00', NULL, NULL)"
+    "(0, 'apple', NULL, '989999', 1, 2, 1, NULL, NULL, 0, NULL, NULL, NULL, '', 2, 0, 1, '', NULL, 'yes', 0, '2021-10-26 12:05:38', '0000-00-00 00:00:00', '0000-00-00      00:00:00', NULL, NULL)"
     ]
       },
       {
         "table":"category",
-        "status":"deleClient",
+        "status":"newClient",
        "values":
     ["(0, 'mango', NULL, '989999', 1, 2, 1, NULL, NULL, 0, NULL, NULL, NULL, '', 2, 0, 1, '', NULL, 'yes', 0, '2021-10-26 12:05:38', '0000-00-00 00:00:00', '0000-00-00      00:00:00', NULL,NULL)",
     "(0, 'apple', NULL, '989999', 1, 2, 1, NULL, NULL, 0, NULL, NULL, NULL, '', 2, 0, 1, '', NULL, 'yes', 0, '2021-10-26 12:05:38', '0000-00-00 00:00:00', '0000-00-00 00:00:00', NULL, NULL)"
