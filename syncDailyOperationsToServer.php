@@ -14,6 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $json = json_decode(file_get_contents("php://input"));
 
     $rowsTotal = 0;
+    $number_of_rows=0;
     // Converts it into a PHP object
     $columns = array();
     $cc = "";
@@ -114,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             $raw_column_data = $stmt->fetch(PDO::FETCH_ASSOC);
                             foreach ($values as $columns => $columnsValue) {
                                 if (strtotime($values->updated_at) > $raw_column_data["updated_at"]) {
-                                    $sql = "UPDATE $obj->table set $columns='$columnsValue' WHERE id=$values->id";
+                                    $sql = "UPDATE $obj->table set $columns='$columnsValue',sync_status='sync' WHERE id=$values->id";
                                     $stmt = $conn->prepare($sql);
                                     if ($stmt->execute()) {
                                         header("rowsTotal:$rowsTotal");
