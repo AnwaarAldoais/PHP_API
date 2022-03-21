@@ -42,10 +42,19 @@
         "table":"product",
         "status":"editClient",
         "values": [
-                   {"id":17,"name" : "ddd1","code":"5000","updated_at":"2022-03-20 12:46:58"},
-                   {"id":17,"name" : "ddd2","code":"5000","updated_at":"2022-03-20 12:46:58"}
+                    { "id":17,"name" : "Mamonieah","code":"6000","updated_at":"2022-03-20 12:46:58"},
+                    { "id":18,"name" : "Mamonieah Fast","updated_at":"2022-03-20 12:46:58"} 
                   ]
-        
+       
+      },
+        {
+        "table":"category",
+        "status":"editClient",
+        "values": [
+                    { "id":2,"name" : "Vegtables","updated_at":"2022-03-20 12:46:58"},
+                    { "id":9,"name" : "Fast Food","updated_at":"2022-03-20 12:46:58"} 
+                  ]
+       
       }
     ]
 }
