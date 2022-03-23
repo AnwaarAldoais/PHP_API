@@ -14,20 +14,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $json = json_decode(file_get_contents("php://input"));
 
     $rowsTotal = 0;
-    $number_of_rows=0;
+    $number_of_rows = 0;
     // Converts it into a PHP object
     $columns = array();
     $cc = "";
-
+    $cx = "";
     $columnsValues = array();
     $ccV = "";
-
-    $co = array();
-    $va = array();
+    $ccT = "";
+    $status = "";
+    $tables = array();
 
     if ($json->data) {
         foreach ($json->data as $obj) {
             if ($obj->status == "newClient") {
+
+                //fetch tables
+                $tables[] = $obj->table;
+
                 //fetch values
                 foreach ($obj->values as $objValues => $newValue) {
                     $columnsValues[] = $newValue;
@@ -37,49 +41,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 $sql = "SELECT column_name FROM information_schema.columns WHERE table_name = '$obj->table'";
                 $stmt = $conn->prepare($sql);
+                if ($stmt->execute()) {
+                    $raw_column_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    // echo json_encode($raw_column_data);
 
-                try {
-                    if ($stmt->execute()) {
-                        $raw_column_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                        foreach ($raw_column_data as $objColumn => $value) {
-                            //fetch columns name from selected table
-                            foreach ($value as $columnKey => $columnValue) {
-                                $columns[] = $columnValue;
-                                if ($columns) {
-                                    //some operations to shift syntax of columns into => a,b,c,d,e
-                                    $cc = implode(",", $columns);
-                                    $cx = trim($cc, '"');
-                                    //some operations to shift syntax of values into => (a,b,c,d,e) (a,b,c,d,e)
-                                    $ccV = implode(",", $columnsValues);
-                                    $ccV = trim($ccV, '"');
-                                }
-                            }
-                        }
-                        // start sync data with client by Insertion
-                        $sql = "INSERT INTO $obj->table ($cx)";
-                        $sql .= "VALUES";
-                        $sql .= $ccV;
-                        // echo $sql;
-                        $stmt = $conn->prepare($sql);
-                        if ($stmt->execute()) {
-                            $id = $conn->lastInsertId();
-                            //update sync_status after insertion
-                            $sql = "UPDATE $obj->table set sync_status='editServer' WHERE id=$id ";
-
-                            $stmt = $conn->prepare($sql);
-                            if ($stmt->execute()) {
-                                //fetch effcted rows 
-                                $number_of_rows = $stmt->fetchColumn();
-                                $number_of_rows += $number_of_rows;
-                                header("rowsTotal:$rowsTotal");
-                                header("rowsEffected:$number_of_rows");
-
-                                echo "Sync data with server successfully";
-                            }
+                    foreach ($raw_column_data as $objColumn => $value) {
+                        //fetch columns name from selected table
+                        foreach ($value as $columnKey => $columnValue) {
+                            $columns[] = $columnValue;
                         }
                     }
-                } catch (Exception $e) {
-                    return $e->getMessage();
+                }
+                if ($columns) {
+                    $columns[] .= "\n";
+                    $columnsValues[] .= "\n";
+                    $tables[] .= "\n";
+                    //some operations to shift syntax of columns[] into => "a,b,c,d,e"
+                    $cc = implode(",", $columns);
+                    $cx = trim($cc, '"');
+
+                    //some operations to shift syntax of values[] into => (a,b,c,d,e) (a,b,c,d,e)
+                    $ccV = implode(",", $columnsValues);
+                    //some operations to shift syntax of values into => (a,b,c,d,e) (a,b,c,d,e)
+                    $ccT = implode("", $tables);
                 }
             } else if ($obj->status == "deleClient") {
                 foreach ($obj->values as $deleTables) {
@@ -131,6 +115,44 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     }
                 }
             }
+        }
+    }
+}
+foreach ($json->data as $obj) {
+    if ($obj->status == "newClient") {
+        $status = "addnew";
+    }
+}
+if ($status == "addnew") {
+    $arr = explode("\n", $cc);
+
+    $arr2 = explode("\n", $ccV);
+
+
+    $arr3 = explode("\n", $ccT);
+
+
+    for ($i = 0; $i < count($arr) - 1; $i++) {
+
+        // start sync data with client by Insertion
+        $sql = "INSERT INTO ";
+        $sql .= trim($arr3[$i], ', ');
+        $sql .= "(";
+        $sql .=  trim($arr[$i], ', ');
+        $sql .= ")";
+        $sql .= "VALUES";
+        $sql .= trim($arr2[$i], ', ');
+        $sql .= ";";
+        $stmt = $conn->prepare($sql);
+
+        if ($stmt->execute()) {
+
+            $number_of_rows = $stmt->rowCount();
+
+            header("rowsTotal:$rowsTotal");
+            header("rowsEffected:$number_of_rows");
+
+            echo "Sync data with server successfully";
         }
     }
 }
